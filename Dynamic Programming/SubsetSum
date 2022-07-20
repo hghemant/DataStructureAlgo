@@ -1,0 +1,73 @@
+import static java.lang.Math.max;
+
+public class SubsetSum {
+    private int sum;
+    private int[] S;
+    private boolean[][] dpTable;
+
+    public SubsetSum(int sum, int[] S) {
+        this.sum = sum;
+        this.S = S;
+        this.dpTable = new boolean[S.length + 1][sum + 1];
+    }
+
+       public void solve1() {
+        for (int i = 0; i <= S.length; i++) {
+            dpTable[i][0] = true;
+        }
+        for (int i = 1; i <= S.length; i++) {
+            for (int j = 1; j <= sum; j++) {
+                if(S[i-1]<=j){
+                    dpTable[i][j]= dpTable[i-1][j- S[i-1]] || dpTable[i-1][j];
+                }else {
+                    dpTable[i][j]=dpTable[i-1][j];
+                }
+            }
+        }
+        System.out.println("Solution: " + dpTable[S.length][sum]);
+    }
+
+    private void printdpTable() {
+        for (int i = 0; i < dpTable.length; i++) {
+            for (int j = 0; j < dpTable[0].length; j++) {
+                if (dpTable[i][j]) {
+                    System.out.print("T" + " - ");
+                } else {
+                    System.out.print("F" + " - ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    public void showResult() {
+        int rowIndex  = S.length;
+        int colIndex = sum;
+
+        while (rowIndex > 0 || colIndex > 0) {
+            if (dpTable[rowIndex][colIndex] == dpTable[rowIndex - 1][colIndex]) {
+                rowIndex = rowIndex - 1;
+            } else {
+                System.out.println("We take: " + S[rowIndex - 1]);
+                colIndex = colIndex - S[rowIndex - 1];
+                rowIndex = rowIndex - 1;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        //int[] S = {5, 2, 3, 1};
+        //int sum = 9;
+
+      // int[] S = {2, 3, 5, 6, 8, 10};
+        int[] S = {1, 4, 5, 2, 3, 10};
+       // int[] S = {3, 3, 5, 6, 8, 11};
+        int sum = 10;
+
+
+        SubsetSum subsetSum = new SubsetSum(sum, S);
+        subsetSum.solve1();
+        subsetSum.showResult();
+        subsetSum.printdpTable();
+    }
+}
