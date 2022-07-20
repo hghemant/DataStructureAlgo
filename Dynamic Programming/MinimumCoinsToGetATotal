@@ -1,0 +1,66 @@
+
+import static java.lang.Math.min;
+
+public class MinimumCoinsToGetATotal {
+    private int MAX = Integer.MAX_VALUE;
+    private int total;
+    private int[] coins;
+    private int[][] dpTable;
+
+    public MinimumCoinsToGetATotal(int total, int[] coins) {
+        this.total = total;
+        this.coins = coins;
+        this.dpTable = new int[coins.length + 1][total + 1];
+    }
+
+
+    public void solve1() {
+        int[][] dpTable = new int[coins.length + 1][total + 1];
+
+        for (int i = 0; i <= coins.length; i++)
+            dpTable[i][0] = 0;
+
+        for (int i = 1; i <= total; i++)
+            dpTable[0][i] = MAX-1;
+
+        for (int i = 1, j = 1; j<= total; j++) {
+              if(j % coins[0]==0){
+                  dpTable[i][j] = j/coins[0];
+              }
+              else {
+                  dpTable[i][j]=MAX-1;
+              }
+        }
+
+        for (int i = 2; i <= coins.length; i++) {
+            for (int j = 1; j <= total; j++) {
+                if(coins[i-1]<=j){
+                    dpTable[i][j]=min(dpTable[i][j-coins[i-1]]+1,dpTable[i-1][j]);
+                }else {
+                    dpTable[i][j]=dpTable[i-1][j];
+                }
+            }
+        }
+        System.out.println("Minimum number of coins - " + dpTable[coins.length][total]);
+        }
+
+    public void showResult() {
+        for (int n = coins.length, w = total; n > 0;) {
+           // System.out.println("Take coin " + coins[n - 1]);
+            if (dpTable[n - 1][w] != dpTable[n][w]) {
+                System.out.println("Take coin " + coins[n - 1]);
+                w = w - coins[n-1];
+            } else {
+                n--;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] coins = {9, 2, 5, 1};
+        int total = 12;
+
+        MinimumCoinsToGetATotal minimumCoinsToGetATotal = new MinimumCoinsToGetATotal(total, coins);
+        minimumCoinsToGetATotal.solve1();
+        minimumCoinsToGetATotal.showResult();
+    }
