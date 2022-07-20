@@ -18,21 +18,6 @@ public class RodCutting {
     }
 
 
-/*
-    public void solve() {
-
-        for (int i = 1; i <= prices.length; i++) {
-            for (int j = 1; j <= lengthOfRod; j++) {
-                int notTaking = dpTable[i - 1][j];
-                int taking = 0;
-                if (i <= j) {
-                    taking = prices[i-1] + dpTable[i][j - i];
-                }
-                dpTable[i][j] = max(taking, notTaking);
-            }
-        }
-    }
-*/
 
     public void solve1() {
 
