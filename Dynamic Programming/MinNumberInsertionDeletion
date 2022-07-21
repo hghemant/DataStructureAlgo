@@ -1,0 +1,59 @@
+public class MinNumberInsertionDeletion {
+    private String s1;
+    private String s2;
+    int[][] dpTable;
+
+    public MinNumberInsertionDeletion() {
+
+    }
+
+    public MinNumberInsertionDeletion(String s1, String s2) {
+        this.s1 = s1;
+        this.s2 = s2;
+        this.dpTable = new int[s1.length() + 1][s2.length() + 1];
+    }
+
+    public int solve() {
+        for (int i =0; i<s1.length();i++){
+            for (int j =0; j<s2.length(); j++){
+                if(i==0||j==0){
+                    dpTable[i][j]=0;
+                }
+            }
+        }
+        for (int i = 1; i <= s1.length(); i++) {
+            for (int j = 1; j <= s2.length(); j++) {
+                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+                    dpTable[i][j] = 1 + dpTable[i - 1][j - 1];
+                } else {
+                    dpTable[i][j] = Math.max(dpTable[i - 1][j], dpTable[i][j - 1]);
+                }
+            }
+        }
+        System.out.println("Longest common sub is - " + dpTable[s1.length()][s2.length()]);
+        return dpTable[s1.length()][s2.length()];
+    }
+
+
+    public static void main(String[] args) {
+        MinNumberInsertionDeletion lcs = new MinNumberInsertionDeletion();
+        String s1 = "geeksforgeeks";
+        String s2 = "geeks";
+
+        char[] X=s1.toCharArray();
+        char[] Y=s2.toCharArray();
+        int m = X.length;
+        int n = Y.length;
+
+        //System.out.println("Length of LCS is" + " " + lcs.dp_lcs( X, Y, m, n ) );
+
+        //Better way
+        lcs = new MinNumberInsertionDeletion(s1, s2);
+        int lcsDigit=lcs.solve();
+        int minInsertion=m-lcsDigit;
+        System.out.println("Min Insertion - " +minInsertion);
+        int minDeletion=n-lcsDigit;
+        System.out.println("Min Deletion - "+minDeletion);
+    }
+
+}
