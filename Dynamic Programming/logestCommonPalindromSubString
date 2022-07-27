@@ -1,0 +1,48 @@
+public class LongestPalinSubstring {
+
+
+    static int longestPalSubstr(String str){
+
+        int low=0;
+        int high=str.length()-1;
+        int p=0;
+        while(low<high){
+            boolean palindrom = isPalindrom(str,0,str.length()-1);
+            if(palindrom==true){
+                p=str.length();
+                System.out.println("Length is: " + str.length());
+                System.out.println("String  is: " + str);
+                break;
+            }
+            StringBuilder sb =new StringBuilder();
+            sb.append(str);
+            sb.deleteCharAt(str.length()-1);
+            sb.deleteCharAt(0);
+            str=sb.toString();
+            high--;
+            low++;
+        }
+        return p;
+    }
+
+    public static boolean isPalindrom(String str, int i, int j) {
+        if (i == j) return true;
+
+        if (i > j) return true;
+        while (i < j) {
+            if (str.charAt(i) != str.charAt(j)) {
+                return false;
+
+            }
+            i++;
+            j--;
+        }
+        return true;
+    }
+
+    public static void main(String[] args)
+    {
+        String str = "forgeeksskeegfor";
+        System.out.println("Length is: " + longestPalSubstr(str));
+    }
+}
