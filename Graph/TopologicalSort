@@ -1,0 +1,44 @@
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Stack;
+
+
+//TopologicalSort using DFS
+
+public class TopologicalSort {
+
+    private int V;   // No. of vertices
+    private LinkedList<Integer> adj[]; //Adjacency Lists
+
+    public int[] dfsOfGraph(int v, ArrayList<ArrayList<Integer>> adj, ArrayList<Integer>softDfs){
+
+        boolean vis[] = new boolean[v];
+        Stack<Integer>stack =new Stack<>();
+
+        for(int i =0; i <v;i++){
+            if(!vis[i]){
+                dfsGraph(i,adj,vis,stack);
+            }
+        }
+       int ans[] = new int[v];
+        int i=0;
+        while(!stack.isEmpty()){
+            ans[i++]= stack.pop();
+        }
+     return ans;
+    }
+    public void dfsGraph(int v , ArrayList<ArrayList<Integer>> adj, boolean vis[], Stack<Integer> stack){
+
+        vis[v]=true;
+        for(Integer neighbour:adj.get(v)){
+            if(!vis[neighbour]){
+                dfsGraph(0,adj,vis,stack);
+            }
+        }
+stack.push(v);
+
+    }
+
+}
+
