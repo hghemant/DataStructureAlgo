@@ -1,0 +1,42 @@
+
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class BFS {
+
+    private int V;   // No. of vertices
+    private LinkedList<Integer> adj[]; //Adjacency Lists
+
+
+    public ArrayList<Integer> bfsGraph(int v ,ArrayList<ArrayList<Integer>> adj){
+          boolean[] vis = new boolean[v+1];
+          ArrayList<Integer> bfs= new ArrayList<>();
+
+          for(int i =1 ; i<v;i++){
+              Queue<Integer> que= new LinkedList<>();
+              que.add(i);
+              vis[i]=true;
+
+              while(!que.isEmpty()){
+
+                  Integer node= que.poll();
+                  bfs.add(node);
+
+                  for(Integer it : adj.get(node)){
+
+                      if(vis[it]==false){
+                          vis[it]=true;
+                          que.add(it);
+
+                      }
+                  }
+              }
+
+          }
+
+        return  bfs;
+    }
+
+}
