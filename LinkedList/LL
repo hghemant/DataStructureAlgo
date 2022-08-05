@@ -1,5 +1,6 @@
 package LinkedList;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -150,6 +151,51 @@ public class rotateLinkedList {
 
     }
 
+    public Node swapNodes(Node head,int num, int k) {
+
+        Node temp = head;
+
+        int l = num - k + 1;
+        if(l == k)
+            return head;
+
+        int k_val = 0 , l_val = 0;
+        temp = head;
+        for(int i = 1 ; i <= num ; i++){
+            if(i == k)
+                k_val = temp.data;
+            if(i == l)
+                l_val = temp.data;
+            temp = temp.next;
+        }
+
+        temp = head;
+        for(int i = 1 ; i <= num ; i++){
+            if(i == k)
+                temp.data = l_val;
+            if(i == l)
+                temp.data = k_val;
+            temp = temp.next;
+        }
+        return head;
+
+    }
+
+    public Node rotate(Node head, int k) {
+      Node firstNode=head;
+        while (firstNode.next != null) {
+            firstNode = firstNode.next;
+        }
+      for(int i=0; i<k;i++){
+          Node temp=head;
+           head=head.next;
+           temp.next=null;
+           firstNode.next=temp;
+           firstNode = temp;
+         }
+       return head;
+    }
+
     public boolean findLoop(Node head) {
 
         if (head == null) {
@@ -189,6 +235,30 @@ public class rotateLinkedList {
         curr=curr.next;
         }
     }
+
+    Node compute(Node head)
+    {
+        // your code here
+        Node curr =head;
+        Node temp = curr;
+
+        while(curr.next != null){
+
+            if(curr.data < curr.next.data){
+
+                temp = curr;
+                temp.data = temp.next.data;
+                temp.next = temp.next.next;
+
+                curr = head;
+            }else{
+                curr = curr.next;
+            }
+        }
+        return head;
+    }
+
+
 
     public static void main(String args[]) {
         rotateLinkedList rotateLinkedLists = new rotateLinkedList();
