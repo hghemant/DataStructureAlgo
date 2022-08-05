@@ -1,8 +1,10 @@
-package LinkList;
+package LinkedList;
 
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
-public class LL {
+public class rotateLinkedList {
+
     Node head;
 
     class Node {
@@ -14,7 +16,6 @@ public class LL {
             this.next = null;
         }
     }
-//Add -first , last
 
     public void addFirst(String data) {
 
@@ -68,39 +69,133 @@ public class LL {
             System.out.println("the list is empty");
         }
 
-        if(head.next==null){
-            head=null;
+        if (head.next == null) {
+            head = null;
             return;
         }
         Node secondNode = head;
         Node lastNode = head.next;
         while (lastNode.next != null) {
-            lastNode= lastNode.next;
-            secondNode=secondNode.next;
+            lastNode = lastNode.next;
+            secondNode = secondNode.next;
         }
-        secondNode.next=null;
-    }
-
-    public static void removeLoop(Node head){
-        // code here
-        // remove the loop without losing any nodes
-        HashMap<Node,Integer> map=new HashMap<>();
-        Node ans=null;
-        Node prev=null;
-        Node temp=head;
-        while(temp!=null)
-        {
-            if (!map.containsKey(temp)){map.put(temp,temp.data);}
-            else{ans=prev;break;}
-            prev=temp;
-            temp=temp.next;
-        }
-        if (ans!=null){ans.next=null;}
+        secondNode.next = null;
     }
 
 
-    public  static  void  main(String args[]){
+    public Node reverse(Node head) {
+        Node prev = null;
+        Node Curr = head;
+        while (Curr != null) {
+            Node next = Curr.next;
+            Curr.next = prev;
+            prev = Curr;
+            Curr = next;
+        }
+        return prev;
+    }
 
+    public Node findMiddle(Node head) {
+        Node fast = head;
+        Node slow = head;
+        if (fast.next != null || fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
 
+        }
+        return slow;
+    }
+
+    public boolean isPalndrom(Node head) {
+
+        if (head == null || head.next == null) return true;
+
+        Node middleElement = findMiddle(head);
+        Node secondHalfToStart = reverse(middleElement.next);
+        Node firstHalfToStart = head;
+
+        while (secondHalfToStart != null) {
+            if (firstHalfToStart.data != secondHalfToStart.data) return false;
+            firstHalfToStart = firstHalfToStart.next;
+            secondHalfToStart = secondHalfToStart.next;
+
+        }
+        return true;
+    }
+
+    public Node removeNthFromEnd(Node head, int n) {
+
+        if (head.next == null) {
+            return null;
+        }
+        int size = 0;
+        Node currNode = head;
+        while (currNode != null) {
+            currNode = currNode.next;
+            size++;
+        }
+
+        if (size == n) {
+            return head.next;
+        }
+        int indexToSearch = size - n;
+        Node prev = head;
+        int i = 0;
+        while (i < indexToSearch) {
+            prev = prev.next;
+            i++;
+        }
+        prev.next = prev.next.next;
+        return head;
+
+    }
+
+    public boolean findLoop(Node head) {
+
+        if (head == null) {
+            System.out.println("the list is empty");
+        }
+
+        if (head.next == null) {
+            head = null;
+            return false;
+        }
+        Node secondNode = head;
+        Node lastNode = head;
+        while (lastNode.next != null || lastNode.next.next != null) {
+            lastNode = lastNode.next.next;
+            secondNode = secondNode.next;
+            if (lastNode == secondNode) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    public static void removeLoop(Node head) {
+        if (head.next == null) {
+            return;
+        }
+        Set<Node> set=new HashSet<>();
+        Node prev = null;
+        Node curr = head;
+        while (curr!= null ) {
+           if(set.contains(curr)){
+               prev.next=null;
+               return;
+           }
+        set.add(curr);
+        curr=curr.next;
+        }
+    }
+
+    public static void main(String args[]) {
+        rotateLinkedList rotateLinkedLists = new rotateLinkedList();
+        rotateLinkedLists.addFirst("a");
+        rotateLinkedLists.addFirst("is");
+        rotateLinkedLists.addLast("one");
     }
 }
+
+
