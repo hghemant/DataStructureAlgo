@@ -1,0 +1,94 @@
+public int numDistinctIslands(int[][] grid) {
+int m = grid.length;
+        int n = grid[0].length;   
+        boolean[][] visited = new boolean[m][n];
+        int result = 0;
+        
+        HashSet<String> set = new HashSet<>();
+        
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (!visited[i][j] && grid[i][j] == 1) {
+                    String direction = getIslandShape(grid, i , j, visited);
+                    if (set.add(direction)) {
+                        result++;
+                    }
+                }
+            }
+        }
+        
+        return result;    
+    }
+    private String getIslandShape(int[][] grid, int i, int j, boolean[][] visited) {
+        if (i < 0 || j < 0 || i >= grid.length || j >= grid[i].length|| visited[i][j] || grid[i][j] == 0) {
+            return "WATER";
+        }
+        visited[i][j] = true;
+        String direction = "";
+        
+        direction += "RIGHT" + getIslandShape(grid, i , j + 1, visited);
+        direction += "DOWN" + getIslandShape(grid, i + 1, j, visited);
+        direction += "LEFT" + getIslandShape(grid, i , j - 1, visited);
+        direction += "UP" + getIslandShape(grid, i - 1, j, visited);
+        
+        return direction;
+        
+    }
+    
+    
+    
+    Another Way 
+    
+    
+    public int numIslands(char[][] grid) {
+        // Code here
+        int count=0;
+        int n = grid.length;
+        int m = grid[0].length;
+        for (int i =0;i<n;i++){
+            for (int j =0;j<m;j++){
+
+                if(grid[i][j]=='1'){
+                    count++;
+                    numIsland(i,j,n,m,grid);
+                }
+            }
+
+        }
+      return  count;
+    }
+
+    boolean isValid(int i, int j, int n , int m,char[][] grid){
+        if(i>=0 && i<n && j>=0 && j<m && grid[i][j] == '1'){
+            return true;
+        }
+
+        return false;
+    }
+    public void numIsland(int i,int j,int n,int m,char[][]grid) {
+
+        grid[i][j]='0';
+        if(isValid(i+1, j, n, m , grid))
+            numIsland(i+1, j, n, m, grid);
+        
+        if(isValid(i-1, j, n, m , grid))
+            numIsland(i-1, j, n, m, grid);
+
+        if(isValid(i, j+1, n, m , grid))
+            numIsland(i, j+1, n, m, grid);
+
+        if(isValid(i, j-1, n, m , grid))
+            numIsland(i, j-1, n, m, grid);
+
+        if(isValid(i-1, j-1, n, m , grid))
+            numIsland(i-1, j-1, n, m, grid);
+
+        if(isValid(i-1, j+1, n, m , grid))
+            numIsland(i-1, j+1, n, m, grid);
+
+        if(isValid(i+1, j-1, n, m , grid))
+            numIsland(i+1, j-1, n, m, grid);
+
+        if(isValid(i+1, j+1, n, m , grid))
+            numIsland(i+1, j+1, n, m, grid);
+    }
