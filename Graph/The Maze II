@@ -1,0 +1,40 @@
+public final int[][] DIR = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    public int shortestDistance(int[][] maze, int[] start, int[] destination) {
+        if (maze == null || maze.length == 0) return 0;
+        
+        int row = maze.length;
+        int col = maze[0].length;
+        
+        int[][] dummy = new int[row][col];
+        
+        for (int[] r : dummy) Arrays.fill(r, Integer.MAX_VALUE);
+        dummy[start[0]][start[1]] = 0;
+        
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(start[0] * col + start[1]);
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            while (size-- > 0) {
+                int id = queue.poll();
+                int i = id / col;
+                int j = id % col;
+                for (int[] d : DIR) {
+                    int cnt = 0;
+                    int x = i + d[0];
+                    int y = j + d[1];
+                    while (x >= 0 && x < row && y >= 0 && y < col && maze[x][y] == 0 && maze[x][y] != 1) {
+                        x += d[0];
+                        y += d[1];
+                        cnt++;
+                    }
+                    
+                    if (dummy[i][j] + cnt < dummy[x - d[0]][y - d[1]]) {
+                        queue.offer((x - d[0]) * col + y - d[1]);
+                        dummy[x - d[0]][y - d[1]] = dummy[i][j] + cnt;
+                    }
+                }
+            }
+        }
+        return dummy[destination[0]][destination[1]] == Integer.MAX_VALUE ? -1 : dummy[destination[0]][destination[1]];
+    }
