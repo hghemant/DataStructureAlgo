@@ -1,0 +1,101 @@
+Problem : We can represent a sentence as an array of words, for example, the sentence "I am happy with leetcode" can be represented as arr = ["I","am",happy","with","leetcode"].
+
+Given two sentences sentence1 and sentence2 each represented as a string array and given an array of string pairs similarPairs where similarPairs[i] = [xi, yi] indicates that the two words xi and yi are similar.
+
+Return true if sentence1 and sentence2 are similar, or false if they are not similar.
+
+Two sentences are similar if:
+
+They have the same length (i.e., the same number of words)
+sentence1[i] and sentence2[i] are similar.
+Notice that a word is always similar to itself, also notice that the similarity relation is transitive. For example, if the words a and b are similar, and the words b and c are similar, then a and c are similar.
+
+Example : Input: sentence1 = ["great","acting","skills"], sentence2 = ["fine","drama","talent"], similarPairs = [["great","good"],["fine","good"],["drama","acting"],["skills","talent"]]
+Output: true
+Explanation: The two sentences have the same length and each word i of sentence1 is also similar to the corresponding word in sentence2.
+
+
+
+
+
+
+
+Using DFS 
+
+
+public boolean areSentencesSimilarTwo(String[] words1, String[] words2, List<List<String>> pairs) {
+        if(words1.length != words2.length) return false;
+        
+        // to build up the graph
+        Map<String, List<String>> graph = new HashMap<String, List<String>>();
+        for(List<String> pair : pairs){
+            String str1 = pair.get(0), str2 = pair.get(1);
+            graph.putIfAbsent(str1, new ArrayList<String>());
+            graph.putIfAbsent(str2, new ArrayList<String>());
+            graph.get(str1).add(str2);
+            graph.get(str2).add(str1);
+        }
+        
+        for(int i = 0; i < words1.length; i++){
+            if(!dfs(graph, new HashSet<String>(), words1[i], words2[i])){
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    private boolean dfs(Map<String, List<String>> graph, Set<String> visited, String start, String end){
+        if(start.equals(end)) return true;
+        visited.add(start);
+        if(!graph.containsKey(start) || !graph.containsKey(end)) return start.equals(end);
+        
+        for(String next : graph.get(start)){
+            if(visited.contains(next)) continue;
+            if(dfs(graph, visited, next, end)) return true;
+        }
+        
+        return false;
+    }
+    
+    
+    
+    // using BFS 
+    
+    public boolean areSentencesSimilarTwo(String[] sentence1, String[] sentence2, List<List<String>> similarPairs) {
+        if(sentence1.length==0 || sentence2.length==0)return sentence2.length==sentence1.length;
+        if(sentence1.length!=sentence2.length)return false;
+        HashMap<String,List<String>> adjList = new HashMap();
+        for(int i=0; i<similarPairs.size(); i++){
+            String first = similarPairs.get(i).get(0);
+            String second = similarPairs.get(i).get(1);
+            adjList.putIfAbsent(first,new ArrayList());
+            adjList.putIfAbsent(second,new ArrayList());
+            adjList.get(first).add(second);
+            adjList.get(second).add(first);
+        }
+        Queue<String>queue= new LinkedList();
+        for(int i=0; i<sentence1.length; i++){
+            boolean found=false;
+            String end = sentence2[i];
+            String start = sentence1[i];
+            queue.add(start);
+            HashSet<String> seen = new HashSet();
+            seen.add(start);
+            while(!queue.isEmpty()){
+                String elem = queue.remove();
+                if(elem.equals(end)){
+                    found=true;
+                    break;
+                }
+                for(String valueStr: adjList.getOrDefault(elem,new ArrayList<>())){
+                    if(!seen.contains(valueStr)){
+                        seen.add(valueStr);
+                        queue.add(valueStr);
+                    }
+                }
+            }
+            if(!found)return false;
+        }
+        return true;
+    }
