@@ -1,0 +1,116 @@
+public int minKnightMoves(int x, int y) {
+    // Convert x,y to positive because since we are going from (0,0)
+    // We take same number of minimum moves to go to (-1,-2) or (1,2) or (-1,2) or (1,-2)
+    // from (0,0). So We are only going to compute it in the 1st quadrant. 
+    x = Math.abs(x);
+    y = Math.abs(y);
+    
+    // All possible x,y directions from (0,0);
+    int[] xDir = {-2,-2,-1,-1,1,1,2,2};
+    int[] yDir = {-1,1,-2,2,-2,2,-1,1};
+    
+    Queue<Coordinates> queue = new LinkedList();
+    queue.add(new Coordinates(0,0));
+    
+    // to avoid visiting same coordinates again
+    Set<String> visitSet = new HashSet();
+    
+    int moves =0;
+    
+    while(!queue.isEmpty()){
+        //very important to keep size constant before using it in a for loop.
+        int size = queue.size();
+        
+        // each set in queue would mean one move - important to understand
+        for(int i=0;i<size;i++){
+            Coordinates curr = queue.remove();
+            //if we find the coordinates
+            if(curr.x==x && curr.y==y)
+                return moves;
+            String s = curr.x+","+curr.y;
+            
+            // if we already visited this coordinate - continue
+            if(visitSet.contains(s))
+                continue;
+            visitSet.add(s);
+            
+            
+            for(int j =0;j<8;j++){
+                int newX = curr.x+xDir[j];
+                int newY = curr.y+yDir[j];
+                // We want to limit to our computation to Quadrant 1 but we need to allow one back step. 
+                // For eg if we want to go to (1,1) from (0,0) your first step could be (2,-1) or (1,-2)
+                if(newX>-2 && newY> -2)
+                    queue.add(new Coordinates(newX,newY));
+            }
+        }
+        //each set in queue would mean one move - important to understand
+        moves++;
+    }
+    return -1;
+}
+
+
+
+
+another Way 
+
+ boolean isValid(int i, int j, int n, boolean[][] visited){
+        if(i>=0 && i<n && j>=0 && j<n && visited[i][j] == false){
+            return true;
+        }
+        return false;
+    }
+
+   // int minStepToReachTarget(vector<int>&KnightPos,vector<int>&TargetPos,int N)
+    public int minStepToReachTarget(int KnightPos[], int TargetPos[], int N)
+    {
+        // Code here
+        int n = N;
+        int tx = TargetPos[0]-1, ty = TargetPos[1]-1;
+        int x1 = KnightPos[0]-1, y1 = KnightPos[1]-1;
+
+        if(x1 == tx && y1 == ty) return 0;
+
+        boolean visited[][] = new boolean[n][n];
+
+        Queue<int[]> q=new LinkedList<>();
+        q.add(new int[]{x1,y1});
+        visited[x1][y1] = true;
+
+        int ans = 0;
+        while(!q.isEmpty()){
+
+            int size = q.size();
+            ans++;
+            while(size != 0){
+                int cur[] = q.poll();
+
+                int xx = cur[0];
+                int yy= cur[1];
+
+
+                int ax[] = {-1,-1,1,1,2,2,-2,-2};
+                int ay[] = {2,-2,2,-2,1,-1,1,-1};
+
+                for(int i=0; i<8; i++){
+                    int nx = xx + ax[i];
+                    int ny = yy + ay[i];
+
+                    if(nx == tx && ny == ty) return ans;
+
+                    if(isValid(nx, ny, n, visited)){
+                        visited[nx][ny] = true;
+                        q.add(new int[]{nx,ny});
+                    }
+                }
+
+                size--;
+            }
+        }
+
+
+        return ans;
+
+
+    }
