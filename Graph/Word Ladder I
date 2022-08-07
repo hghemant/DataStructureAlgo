@@ -1,0 +1,38 @@
+ public int wordLadderLength(String startWord, String targetWord, String[] wordList)
+    {
+        Set<String> set = new HashSet<>();
+        for (String s : wordList) {
+            set.add(s);
+        }
+        if (!set.contains(targetWord)) {
+            return 0;
+        }
+        int step=0;
+        Queue<String> q = new LinkedList<>();
+        q.add(startWord);
+
+        while (!q.isEmpty()) {
+            step++;
+            int len = q.size();
+            for (int i = 0; i < len; i++) {
+                char[] word = q.remove().toCharArray();
+                for (int j = 0; j < startWord.length(); j++) {
+                    char ch = word[j];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        word[j] = c;
+                        if (String.valueOf(word).equals(targetWord))
+                            return step + 1;
+
+                        if (!set.contains(String.valueOf(word)))
+                            continue;
+                        set.remove(String.valueOf(word));
+
+                        q.add(String.valueOf(word));
+                    }
+                    word[j] = ch;
+
+                }
+            }
+        }
+        return 0;
+    }
