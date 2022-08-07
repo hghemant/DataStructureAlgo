@@ -1,0 +1,89 @@
+You are given an m x n grid grid of values 0, 1, or 2, where:
+
+each 0 marks an empty land that you can pass by freely,
+each 1 marks a building that you cannot pass through, and
+each 2 marks an obstacle that you cannot pass through.
+You want to build a house on an empty land that reaches all buildings in the shortest total travel distance. You can only move up, down, left, and right.
+
+Return the shortest travel distance for such a house. If it is not possible to build such a house according to the above rules, return -1.
+
+The total travel distance is the sum of the distances between the houses of the friends and the meeting point.
+
+The distance is calculated using Manhattan Distance, where distance(p1, p2) = |p2.x - p1.x| + |p2.y - p1.y|.
+
+
+Example : Input: grid = [[1,0,2,0,1],[0,0,0,0,0],[0,0,1,0,0]]
+Output: 7
+Explanation: Given three buildings at (0,0), (0,4), (2,2), and an obstacle at (0,2).
+The point (1,2) is an ideal empty land to build a house, as the total travel distance of 3+3+1=7 is minimal.
+So return 7
+
+
+
+class Solution {
+    
+    final static int[][] directions = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+    public int shortestDistance(int[][] grid) {
+        int rows = grid.length;
+        int cols = grid[0].length;
+        int[][] distances = new int[rows][cols];
+        // visitCount keeps a track of all the buildings that a particular empty spot can be visited from.
+        // For any (i, j) pair to be eligible for shortestDistance calculation, it should fulfill two conditions -
+        // 1) grid[i][j] must be empty i.e, 0
+        // 2) (i,j) should be reachable from all the buildings i.e, visitCount[i][j] should equal totalBuildings
+        int[][] visitCount = new int[rows][cols];
+        int totalBuildings = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                // For each building, calculate the distances of REACHABLE empty spots
+                if (grid[i][j] == 1) {
+                    totalBuildings++;
+                    bfs(new int[]{i, j}, grid, distances, new boolean[rows][cols], visitCount);
+                }
+            }
+        }
+        int minDis = Integer.MAX_VALUE;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j] == 0 && visitCount[i][j] == totalBuildings) {
+                    // Compare minDis with the total distance of am empty spot that is reachable from all the buildings
+					// The problem statement was a big ambiguous because of which I was returning -1 when an empty spot wasn't reachable by all the nodes. If you did something similar... cheers :D
+                    minDis = Math.min(minDis, distances[i][j]);
+                }
+            }
+        }
+        // If there are no empty spots that can be reached by all the buildings, return -1
+        return (minDis == Integer.MAX_VALUE ? -1 : minDis);
+    }
+
+    private void bfs(int[] house, int[][] grid, int[][] distances, boolean[][] visited, int[][] visitCount) {
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(house);
+        // A temporary queue to hold the next level
+        // I prefer this to the traditional way of iterating over the queue till it's initial size
+        Queue<int[]> temp = new LinkedList<>();
+        int distance = 1;
+        while (!queue.isEmpty()) {
+            int[] cur = queue.poll();
+            for (int[] direction : directions) {
+                int nx = cur[0] + direction[0];
+                int ny = cur[1] + direction[1];
+                if (nx >= 0 && ny >= 0 && nx < grid.length && ny < grid[0].length && grid[nx][ny] == 0 && !visited[nx][ny]) {
+                    visited[nx][ny] = true;
+                    distances[nx][ny] += distance;
+                    temp.add(new int[]{nx, ny});
+                    visitCount[nx][ny]++;
+                }
+            }
+            if (queue.isEmpty() && !temp.isEmpty()) {
+                // If there are more levels, continue the bfs
+                queue = temp;
+                distance++;
+                temp = new LinkedList<>();
+            }
+        }
+    }    
+    
+    
+}
