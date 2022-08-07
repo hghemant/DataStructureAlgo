@@ -1,0 +1,38 @@
+public String serialize(Node root) {
+        if (root == null) return "";
+        StringBuilder sb = new StringBuilder();
+        Queue<Node> q = new LinkedList<>();
+        sb.append(root.val);
+        q.add(root);
+        while (!q.isEmpty()) {
+            Node curr = q.poll();
+            sb.append(" ");
+            sb.append(curr.children.size());
+            for (Node adj : curr.children) {
+                sb.append(" ");
+                sb.append(adj.val);
+                q.add(adj);
+            }
+        }
+        return sb.toString();
+    }
+	
+    // Decodes your encoded data to tree.
+     public Node deserialize(String data) {
+        if (data.length() == 0) return null;
+        Queue<Node> q = new LinkedList<>();
+        String[] arr = data.split(" ");
+        Node root = new Node(Integer.parseInt(arr[0]), new ArrayList<>());
+        q.add(root);
+        int i = 1;
+        while (i < arr.length) {
+            int size = Integer.parseInt(arr[i++]);
+            Node curr = q.poll();
+            for (int j = 0; j < size; ++j) {
+                Node adj = new Node(Integer.parseInt(arr[i++]), new ArrayList<>());
+                curr.children.add(adj);
+                q.add(adj);
+            }
+        }
+        return root;
+    }
