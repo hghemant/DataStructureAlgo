@@ -1,0 +1,94 @@
+
+
+There is a new alien language that uses the English alphabet. However, the order among the letters is unknown to you.
+
+You are given a list of strings words from the alien language's dictionary, where the strings in words are sorted lexicographically by the rules of this new language.
+
+Return a string of the unique letters in the new alien language sorted in lexicographically increasing order by the new language's rules. If there is no solution, return "". If there are multiple solutions, return any of them.
+
+A string s is lexicographically smaller than a string t if at the first letter where they differ, the letter in s comes before the letter in t in the alien language. If the first min(s.length, t.length) letters are the same, then s is smaller if and only if s.length < t.length.
+
+Example : 
+
+Input: words = ["wrt","wrf","er","ett","rftt"]
+Output: "wertf"
+
+
+public String alienOrder(String[] words) {
+        if (words == null || words.length == 0) return "";
+        /**
+        Think about this as a Topological sort --- What we actually need to do in this problem is to find out which leeters come first. 
+        Imagine every letter is a vertex in a directed graph. And we want to know which letter has no arrows coming in. Those are the ones we are going to add in our queue first
+        1. Build adjList and inDegree(add here every char from words)
+        2. Then (IMP) - loop thru 2 words at a time(nested loop) and when you find the first occurence of a char that is different put it in adjList and in inDegree and break
+        3. From here loop thru every entry in adjList and add to a queue all those with inDegree 0. 
+        4. Start BFS and keep polling from queue and loop thru the children of a verted and decrement their count of inDegree by 1. If now count became 0 add it to the queue
+        5. Last step is to check if your unique vertices from inDegree is the same as all the nodes you visited. If not, it means that there is a cycle somewhere so return empty string
+        */
+
+        // Let us build the adj List and inDegree map (again this a map to store -if you may- the number of edges that are coming in that vertex)
+        Map<Character, List<Character>> adjList = new HashMap<>();
+        Map<Character, Integer> inDegree = new HashMap<>();
+
+        for (String w : words) {
+            for (char c : w.toCharArray()) {
+                adjList.put(c, new ArrayList<>());
+                inDegree.put(c, 0);
+            }
+        }
+
+        // Let us loop though 2 words at a time to find the first char different in them
+        // We are doing this because we care about the lexical order
+        // "aba" will come before "aca" because b is before c and so on
+        for (int i = 0; i < words.length - 1; i++) {
+            String word1 = words[i];
+            String word2 = words[i + 1];
+            
+            // Quickly check if we basically have a cycle here -> consider examble
+            // word1 = "abc" , word2 = "ab"
+            if(word1.length() > word2.length() && word1.startsWith(word2)) return "";
+            
+            // for not getting an out of bounds go only as long as the shorter word
+            int minOfWords = Math.min(word1.length(), word2.length());
+
+            for (int j = 0; j < minOfWords; j++) {
+                char parent = word1.charAt(j);
+                char child = word2.charAt(j);
+                if (parent != child) {
+                    adjList.get(parent).add(child);
+                    inDegree.put(child, inDegree.get(child) + 1);
+                    // since we only care about the first character that is different we break after
+                    break;
+                }
+                
+            }
+        }
+        // I added this print inDegree so you can actually visualize the inDegree map
+        System.out.println(inDegree);
+        
+        // At this point we are almost done and all we have to do is Put all the vertices (letters) with a degree 0 into our queue
+        Queue<Character> q = new LinkedList<>();
+        StringBuilder sb = new StringBuilder();
+
+        for (Map.Entry<Character, Integer> entry : inDegree.entrySet()) {
+            if (entry.getValue() == 0) {
+                q.add(entry.getKey());
+            }
+        }
+
+        // Now all what is left is to keep polling from the queue and go to the children of that vertex and each time when we go to a children we need to decrement the count in inDegree by 1. Why are we doing this? Because after we have processed all the vertices with degree 0 first, then we need to remove them (or not consider them anymore), and we move on to the next level of vertices
+        while (!q.isEmpty()) {
+            Character vertex = q.poll();
+            sb.append(vertex);
+            List<Character> children = adjList.get(vertex);
+            for (Character child : children) {
+                inDegree.put(child, inDegree.get(child) - 1);
+                if (inDegree.get(child) == 0) q.add(child);
+            }
+        }
+
+        // Last check before submission is to check if our String length does not contain all the vertices from inDegre. Becasue if it does not, then it means that we have a cycle so we can return an emtpy string
+        if (inDegree.size() != sb.length()) return "";
+        
+        return sb.toString();
+    }
