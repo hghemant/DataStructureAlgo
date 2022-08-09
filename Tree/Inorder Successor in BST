@@ -1,0 +1,55 @@
+Given the root of a binary search tree and a node p in it, return the in-order successor of that node in the BST. If the given node has no in-order successor in the tree, return null.
+
+The successor of a node p is the node with the smallest key greater than p.val.
+
+ 
+Example 
+Input: root = [2,1,3], p = 1
+Output: 2
+Explanation: 1's in-order successor node is 2. Note that both p and the return value is of TreeNode type
+
+
+
+
+public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        
+
+        
+        if(root == null){
+            return null;
+        }
+        
+        TreeNode cur = root;
+        TreeNode prev = null;
+       
+        
+        while(cur.val != p.val){
+            if(cur.val < p.val){
+                cur = cur.right;
+            }
+            else if(cur.val > p.val){
+                prev = cur;
+                cur = cur.left;
+            }
+        }
+        
+        // p founded, if it doesn't have right child
+        if(cur.right == null){
+            return prev;
+        }
+        
+        // find p's rightNode's mostLeft child
+        TreeNode res = cur.right;
+        while(res != null && res.left != null){
+            res = res.left;
+        }
+        
+        return res;
+        
+        
+        
+        
+        
+        
+        
+    }
