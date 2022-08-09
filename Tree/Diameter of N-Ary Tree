@@ -46,3 +46,59 @@ int diameter;
         // return the max Subtree height.
         return max1;
     }
+    
+    
+    
+    public  int treeDiameter(int[][] edges) {
+	if (edges == null || edges.length == 0 || edges[0].length == 0) {
+		return 0;
+	}
+	// create the connections
+	// 0 <= edges[i][j] <= edges.length
+	ArrayList<Integer>[] adjList = new ArrayList[edges.length + 1];
+	for (int[] edge : edges) {
+		if (adjList[edge[0]] == null) {
+			adjList[edge[0]] = new ArrayList<>();
+		}
+		adjList[edge[0]].add(edge[1]);
+
+		if (adjList[edge[1]] == null) {
+			adjList[edge[1]] = new ArrayList<>();
+		}
+		adjList[edge[1]].add(edge[0]);
+
+	}
+
+	// do BFS from any node and find the farthest node
+	int[] res = bfs(adjList, edges[0][0]);
+	// do BFS from the farthest node to get the diameter
+	res = bfs(adjList, res[1]);
+	return res[0];
+}
+
+// return an array of 2 elements: the distance, and the node at the max distance
+private static final int[] bfs(ArrayList<Integer>[] adjList, int key) {
+	Set<Integer> seen = new HashSet<>();
+	int level = -1;
+	int farthestNode = 0;
+	Queue<Integer> queue = new LinkedList<>();
+	queue.add(key);
+	while (queue.size() > 0) {
+		level++;
+		final int size = queue.size();
+		for (int i = 0; i < size; i++) { // level visit
+			int val = queue.poll();
+			if (seen.add(val) == false) {
+				continue;
+			}
+			farthestNode = val;
+			for (int child : adjList[val]) {
+				if (seen.contains(child) == false) {
+					queue.add(child);
+				}
+			}
+
+		} // for loop
+	}
+	return new int[] {level, farthestNode};
+}
