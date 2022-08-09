@@ -1,0 +1,48 @@
+Given a root of an N-ary tree, you need to compute the length of the diameter of the tree.
+
+The diameter of an N-ary tree is the length of the longest path between any two nodes in the tree. This path may or may not pass through the root.
+
+(Nary-Tree input serialization is represented in their level order traversal, each group of children is separated by the null value.)
+
+Example : 
+Input: root = [1,null,3,2,4,null,5,6]
+Output: 3
+
+int diameter;
+    
+    public int diameter(Node root) {
+        diameter = 0;
+        if(root == null || root.children.size() == 0) return diameter;
+        
+        dfs(root);
+        
+        return diameter;
+    }
+    
+    private int dfs(Node root){
+        // Base case.
+        int childCount = root.children.size();
+        if(childCount == 0) return 0;
+        
+        // Get the heights of all the children.
+        int max1 = 0, max2 = 0;
+        for(int i = 0; i < childCount; i++){
+            Node child = root.children.get(i);
+            // Calculating curr node height for every child.
+            int currHeight = dfs(child)+1;
+            
+            // Updating the max 2 heights.
+            if(currHeight > max1){
+                max2 = max1;
+                max1 = currHeight;
+            }else if(currHeight > max2){
+                max2 = currHeight;
+            }
+            
+            // Update the max diameter.
+            diameter = Math.max(diameter, max1+max2);
+        }
+        
+        // return the max Subtree height.
+        return max1;
+    }
