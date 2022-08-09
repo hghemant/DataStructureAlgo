@@ -1,0 +1,25 @@
+Given the roots of two binary search trees, root1 and root2, return true if and only if there is a node in the first tree and a node in the second tree whose values sum up to a given integer target.
+
+class Solution {
+   Set<Integer> seen = new HashSet<>();
+    
+    public boolean twoSumBSTs(TreeNode root1, TreeNode root2, int target) {
+        helper1(root1, target);
+        return helper2(root2);
+    }
+    
+    private void helper1(TreeNode root, int k) {
+        if(root == null) return;
+        seen.add(k - root.val);
+        
+        helper1(root.left, k);
+        helper1(root.right, k);
+    }
+    
+    private boolean helper2(TreeNode root) {
+        if(root == null) return false;
+        if(seen.contains(root.val)) return true;
+        
+        return helper2(root.left) || helper2(root.right);
+    }
+}
