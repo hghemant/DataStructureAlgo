@@ -1,0 +1,66 @@
+class Solution
+{
+      public static int wordBreak(String A, ArrayList<String> B )
+    {
+       Node root = new Node();
+       for(String word : B) {
+           root.insert(root, word);
+       }
+       boolean b = wordBreakUtil(A, root);
+       if(b==true) {
+           return 1;
+       } else {
+           return 0;
+       }
+    }
+    static boolean wordBreakUtil(String A, Node root) {
+        if(A.length() ==0) {
+            return true;
+        }
+       
+        for(int i=1; i<= A.length(); i++) {
+            if( root.search(root, A.substring(0,i)) && wordBreakUtil(A.substring(i, A.length()), root)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+class Node {
+    Node[] links;
+    boolean endOfWords;
+     Node() {
+        links = new Node[26];
+        for(int i=0; i<25; i++) {
+            links[i] = null;
+        }
+        endOfWords = false;
+    }
+    
+     void insert(Node root, String word) {
+        Node curr = root;
+        for(char c: word.toCharArray()) {
+            if(curr.links[c-'a'] == null) {
+                curr.links[c-'a'] = new Node();
+            }
+            curr = curr.links[c-'a'];
+        }
+        curr.endOfWords = true;
+    }
+    
+    boolean search(Node root, String string) {
+        Node curr = root;
+        for(char c: string.toCharArray()) {
+            if(curr.links[c-'a'] == null) {
+                return false;
+            }
+            curr = curr.links[c-'a'];
+           
+        }
+         if(curr!= null && curr.endOfWords == true) {
+                return true;
+            }
+            return false;
+    }
+}
