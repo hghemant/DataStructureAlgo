@@ -1,0 +1,44 @@
+You have one chocolate bar that consists of some chunks. Each chunk has its own sweetness given by the array sweetness.
+
+You want to share the chocolate with your k friends so you start cutting the chocolate bar into k + 1 pieces using k cuts, each piece consists of some consecutive chunks.
+
+Being generous, you will eat the piece with the minimum total sweetness and give the other pieces to your friends.
+
+Find the maximum total sweetness of the piece you can get by cutting the chocolate bar optimally.
+
+Example : 
+Input: sweetness = [1,2,3,4,5,6,7,8,9], k = 5
+Output: 6
+Explanation: You can divide the chocolate to [1,2,3], [4,5], [6], [7], [8], [9]
+
+class Solution {
+   public int maximizeSweetness(int[] sweetness, int k) {
+        int left = 1;
+        int sum = 0;
+        for(int i: sweetness)
+            sum += i;
+        int right = sum/(k+1);
+        int mid = 0;
+        int min_max_sweetness = 0;
+        int count;
+        while(left <= right){
+            mid = (left + right)/2;
+            count = 0;
+            sum = 0;
+            for(int i = 0; i< sweetness.length; i++){
+                sum = sum + sweetness[i];
+                if(sum >= mid){
+                    count++;
+                    sum = 0;
+                }
+            }
+            if(count >= k+1){
+                left = mid + 1;
+            }
+            else
+                right = mid - 1;
+        }
+        return right;
+
+        }
+}
