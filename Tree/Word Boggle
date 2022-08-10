@@ -1,0 +1,86 @@
+Given a dictionary of distinct words and an M x N board where every cell has one character. Find all possible words from the dictionary that can be formed by a sequence of adjacent characters on the board. We can move to any of 8 adjacent characters
+
+Note: While forming a word we can move to any of the 8 adjacent cells. A cell can be used only once in one word.
+
+Example 
+Input: 
+N = 1
+dictionary = {"CAT"}
+R = 3, C = 3
+board = {{C,A,P},{A,N,D},{T,I,E}}
+Output:
+CAT
+Explanation: 
+C A P
+A N D
+T I E
+Words we got is denoted using same color.
+
+
+
+
+class Solution
+{
+    
+    
+    public String[] wordBoggle(char board[][], String[] dictionary)
+    {
+    ArrayList<String>as=new ArrayList<>();
+        int index=0;
+        for(int i=0;i<dictionary.length;i++)
+        {
+            if(isWordExist(board,dictionary[i]))
+            {
+                as.add(dictionary[i]);
+            }
+        }
+        String[]ans=new String[as.size()];
+        for(int i=0;i<as.size();i++)
+        {
+            ans[i]=as.get(i);
+        }
+       Arrays.sort(ans);
+       
+return ans;
+    }
+    
+    
+    public boolean isWordExist(char[][] board, String word){
+        if(board==null || board.length==0) return  false;
+        int row = board.length;
+        int col= board[0].length;
+        //visited= new boolean[row][col];
+        for(int i=0; i<board.length ; i++){
+            for(int j=0; j<board[0].length ; j++){
+                if(board[i][j]==word.charAt(0) && dfsGraph(board, i ,j,0, word)) return  true;
+            }
+        }
+        return  false;
+    }
+    
+public boolean dfsGraph(char[][] board, int i , int j, int count ,String word){
+
+        if(count==word.length()){
+            return true;
+        }
+        
+        if(i < 0 || i >= board.length || j < 0 || j >= board[0].length || board[i][j]!=word.charAt(count)){
+            return false;
+        }
+
+        char temp=board[i][j];
+        board[i][j]=' ';
+        boolean found=dfsGraph(board,i+1,j,count +1 , word)
+                            ||dfsGraph(board,i-1,j,count +1 , word)
+                            ||dfsGraph(board,i,j+1,count +1 , word)
+                            ||dfsGraph(board,i,j-1,count +1 , word)
+                            ||dfsGraph(board,i+1,j+1,count +1 , word)
+                            ||dfsGraph(board,i-1,j-1,count +1 , word)
+                            ||dfsGraph(board,i+1,j-1,count +1 , word)
+                            ||dfsGraph(board,i-1,j+1,count +1 , word);
+                            
+          board[i][j]=temp;
+          return found;
+        }
+
+}
