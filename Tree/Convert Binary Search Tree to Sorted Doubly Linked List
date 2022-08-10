@@ -1,0 +1,51 @@
+Convert a Binary Search Tree to a sorted Circular Doubly-Linked List in place.
+
+You can think of the left and right pointers as synonymous to the predecessor and successor pointers in a doubly-linked list. For a circular doubly linked list, the predecessor of the first element is the last element, and the successor of the last element is the first element.
+
+We want to do the transformation in place. After the transformation, the left pointer of the tree node should point to its predecessor, and the right pointer should point to its successor. You should return the pointer to the smallest element of the linked list.
+
+Example :
+Input: root = [4,2,5,1,3]
+Output: [1,2,3,4,5]
+
+
+class Solution {
+    public Node treeToDoublyList(Node root) {
+        List<Node> list = new ArrayList<>();
+        
+        inOrder(root, list);
+        
+        if (list.size() == 0)
+            return null;
+        
+        Node head = list.get(0);
+        if (list.size() == 1) {
+            head.left = head;
+            head.right = head;
+            return head;
+        }
+        
+        Node last = list.get(list.size() - 1);
+        head.left = last;
+        last.right = head;
+        
+        Node ptr = head;
+        for (int i = 1; i < list.size(); i++) {
+            Node node = list.get(i);
+            ptr.right = node;
+            node.left = ptr;
+            ptr = ptr.right;
+        }
+        
+        return head;
+    }
+    
+    private void inOrder(Node root, List<Node> list) {
+        if (root == null)
+            return;
+        
+        inOrder(root.left, list);
+        list.add(root);
+        inOrder(root.right, list);
+    }
+}
