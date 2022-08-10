@@ -1,0 +1,24 @@
+class Solution {
+     public int fixedPoint(int[] arr) {
+        int smallest_index  = Integer.MAX_VALUE;
+        
+        int left = 0;
+        int right = arr.length - 1;
+        
+        while(left <= right) {
+            int mid = left + (right - left)/2;
+            
+            if(arr[mid] == mid) {
+                smallest_index = Math.min(smallest_index, mid);
+            }
+            
+            if(arr[mid] < mid) { // thus definitely left portion will not have that number, update the search space to right
+                left = mid + 1;
+            }else{
+                right = mid - 1;
+            }
+        }
+        
+        return smallest_index == Integer.MAX_VALUE? -1 : smallest_index;
+    }
+}
