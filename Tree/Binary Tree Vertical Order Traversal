@@ -42,3 +42,40 @@ public List<List<Integer>> verticalOrder(TreeNode root) {
 
     return res;
 }
+
+
+
+
+
+class Solution {
+    public List<List<Integer>> verticalOrder(TreeNode root) {
+        Map<Integer, List<int[]>> map = new TreeMap<>();
+        dfs(root,0,0,map);
+        
+        List<List<Integer>> res = new ArrayList<>();
+        
+        for(List<int[]> e : map.values()){
+            Collections.sort(e ,(x1,x2) -> x1[0]-x2[0]);
+            List<Integer> t= new ArrayList<>();
+            
+            for(int[] val :e){
+                t.add(val[1]);
+            }
+            res.add(t);
+        }
+        return res;
+    }   
+    
+    private void dfs(TreeNode root, int depth,int index,Map<Integer, List<int[]>> map){
+        if(root == null){
+            return;
+        }
+        if(!map.containsKey(index)){
+            map.put(index, new ArrayList<>());
+        }
+        
+        map.get(index).add(new int[]{depth,root.val});
+        dfs(root.left,depth+1,index-1,map);
+        dfs(root.right,depth+1,index+1,map);
+    }
+}
