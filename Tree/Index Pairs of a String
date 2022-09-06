@@ -1,0 +1,46 @@
+class Solution {
+    public int[][] indexPairs(String text, String[] words) {
+        List<int[]> result = new ArrayList<int[]>();
+        TrieNode root = buildTrie(words);
+        // for loop to keep track of next start position
+        for(int j = 0; j < text.length(); j++){
+            TrieNode curr = root;
+             // for loop to explore for posible words
+            for(int i = j; i < text.length(); i++){
+               curr = curr.children.get(text.charAt(i));
+                if(curr == null) break;
+                if(curr.isWord) result.add(new int[]{j, i});
+            }
+        }
+        return result.toArray(new int[result.size()][2]);
+    }
+    
+    public TrieNode buildTrie(String[] words){
+        TrieNode curr = new TrieNode('#');
+        TrieNode root = curr;
+        for(String word : words){
+            root = curr;
+            for(Character c : word.toCharArray()){
+                if(!root.children.containsKey(c)){
+                    root.children.put(c, new TrieNode());
+                }
+                root = root.children.get(c);
+            }
+            root.isWord = true;
+        }
+        return curr;
+    }
+}
+
+class TrieNode{
+    char c;
+    Map<Character, TrieNode> children = new HashMap<>();
+    boolean isWord;
+    
+    public TrieNode(char c){
+        this.c = c;
+    }
+    public TrieNode(){
+        
+    }
+}
