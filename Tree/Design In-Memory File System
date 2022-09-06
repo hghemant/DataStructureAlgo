@@ -1,0 +1,60 @@
+class FileSystem {
+    class Node {
+        Map<String, Node> children = new TreeMap<>();
+        String name;
+        String content;
+    }
+    
+    Node root;
+    
+    public FileSystem() {
+        root = new Node();
+        root.name = "/";
+    }
+    
+    public void insert(String path, String content) {
+        Node curr = root;
+        String[] p = path.split("/");
+        for (int i = 1; i < p.length; ++i) {
+            curr.children.putIfAbsent(p[i], new Node());
+            curr = curr.children.get(p[i]);
+            curr.name = p[i];
+        }
+        
+        if (content != null) {
+            curr.content = curr.content == null ? content : curr.content + content;
+        }
+    }
+    
+    public Node search(String path) {
+        if (path.equals("/"))
+            return root;
+        
+        Node curr = root;
+        String[] p = path.split("/");
+        for (int i = 1; i < p.length; ++i) {
+            curr = curr.children.get(p[i]);
+        }
+        
+        return curr;
+    }
+    
+    public List<String> ls(String path) {
+        List<String> res = new LinkedList<>();
+        Node node = search(path);
+        return node.content == null ? new LinkedList<>(node.children.keySet()) :
+                                      Collections.singletonList(node.name);
+    }
+    
+    public void mkdir(String path) {
+        insert(path, null);
+    }
+    
+    public void addContentToFile(String filePath, String content) {
+        insert(filePath, content);
+    }
+    
+    public String readContentFromFile(String filePath) {
+        return search(filePath).content;
+    }
+}
