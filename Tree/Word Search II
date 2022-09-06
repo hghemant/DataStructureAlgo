@@ -1,0 +1,58 @@
+class Solution {
+    
+    List<String> res;
+    char[][] board;
+    
+    
+    public List<String> findWords(char[][] _board, String[] words) {
+        res = new ArrayList<String>();
+        this.board = _board;
+        TrieNode trie = new TrieNode();
+        trie.constructTrie(words);
+        for(int r = 0; r<board.length; r++){
+            for(int c = 0; c<board[r].length; c++){
+                helper(r,c,trie);
+            }
+        }
+        Collections.sort(res);
+        return res;
+    }
+    
+    private void helper(int r, int c,TrieNode trie){
+        if(r<0 || c<0 || r==board.length || c==board[r].length || board[r][c]=='#')return;
+        char currentChar = board[r][c];
+        TrieNode next = trie.children[currentChar -'a'];
+        if(next==null)return;
+        if(!next.word.equals("")){
+            res.add(next.word);
+            next.word = "";
+        }
+        board[r][c]='#';
+        helper(r+1,c,next);
+        helper(r-1,c,next);
+        helper(r,c+1,next);
+        helper(r,c-1,next);
+        board[r][c]=currentChar;
+    }
+    
+    class TrieNode{
+        
+        TrieNode[] children = new TrieNode['z'-'a'+1];
+        String word = "";
+        
+        public void constructTrie(String[] words){
+            TrieNode current = this;
+            for(String word : words){
+                for(char c : word.toCharArray()){
+                    if(current.children[c - 'a']==null){
+                       current.children[c - 'a'] = new TrieNode(); 
+                    }
+                    current = current.children[c - 'a'];
+                }
+                current.word = word;
+                current = this;
+            }
+        }
+        
+    }
+}
