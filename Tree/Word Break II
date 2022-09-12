@@ -1,0 +1,42 @@
+Question : 
+Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word is a valid dictionary word. Return all such possible sentences in any order.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+Example : 
+Input: s = "catsanddog", wordDict = ["cat","cats","and","sand","dog"]
+Output: ["cats and dog","cat sand dog"]
+
+
+class Solution {
+      Map<String, List<String>> mp = new HashMap();
+
+    public  List<String> wordBreak(String s, List<String> wordDict) {
+        if(s == null || s.length()==0)
+            return new LinkedList();
+        return getSentences(s ,new HashSet(wordDict));
+    }
+
+    public  List<String> getSentences(String s, Set<String> set) {
+        if(mp.containsKey(s))
+            return mp.get(s);
+        List<String> result = new LinkedList();
+        int n = s.length();
+        for(int i=1; i<=n; i++){
+            String str1 = s.substring(0, i);
+            if(set.contains(str1)){
+                String str2 = s.substring(i);
+                if(str2==null || str2.length()==0){
+                    result.add(str1);
+                    return result;
+                }
+                List<String> sentences = getSentences(str2, set);
+                for(String str3 : sentences){
+                    result.add(str1 + " " + str3);
+                }
+            }
+        }
+        mp.put(s, result);
+        return result;
+    }
+}
