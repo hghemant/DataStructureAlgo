@@ -1,0 +1,47 @@
+Question 
+Given an m x n matrix grid where each cell is either a wall 'W', an enemy 'E' or empty '0', return the maximum enemies you can kill using one bomb. You can only place the bomb in an empty cell.
+The bomb kills all the enemies in the same row and column from the planted point until it hits the wall since it is too strong to be destroyed.
+
+
+Example : 
+Input: grid = [["W","W","W"],["0","0","0"],["E","E","E"]]
+Output: 1
+
+Ans 
+class Solution {
+   int n=0;
+    int m=0;
+    public int maxKilledEnemies(char[][] grid) {
+        n=grid.length;
+        if(n==0)return 0;
+        m=grid[0].length;
+        int max=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]=='0'){
+                    max=Math.max(recur(grid,i,j,0),max);
+                }
+            }
+        }
+        return max;
+    }
+    public int recur(char[][] grid,int x,int y,int count){
+        for(int i=x-1,j=y;i>=0;i--){
+            if(grid[i][j]=='W')break;
+            if(grid[i][j]=='E')count++;
+        }
+        for(int i=x+1,j=y;i<n;i++){
+            if(grid[i][j]=='W')break;
+            if(grid[i][j]=='E')count++;
+        }
+        for(int i=x,j=y-1;j>=0;j--){
+            if(grid[i][j]=='W')break;
+            if(grid[i][j]=='E')count++;
+        }
+        for(int i=x,j=y+1;j<m;j++){
+            if(grid[i][j]=='W')break;
+            if(grid[i][j]=='E')count++;
+        }
+        return count;
+    }
+}
