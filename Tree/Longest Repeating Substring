@@ -1,0 +1,31 @@
+Q: Given a string s, return the length of the longest repeating substrings. If no repeating substring exists, return 0.
+
+Ex : 
+Input: s = "abbaba"
+Output: 2
+Explanation: The longest repeating substrings are "ab" and "ba", each of which occurs twice.
+
+
+Ans : 
+
+class Solution {
+    public int longestRepeatingSubstring(String s) {
+        
+        char[] str = s.toCharArray();
+        int max=0;
+        int len = str.length;
+        int[][] dp = new int[len+1][len+1];
+        
+        for(int i=0; i<len; i++){
+            for(int j=i+1; j<len; j++){
+                if(str[i]==str[j]){
+                    dp[i+1][j+1] = dp[i][j]+1;
+                    max = Math.max(dp[i+1][j+1],max);
+                }
+            }
+        }
+        return max;
+    }
+        
+        
+}
