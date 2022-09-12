@@ -1,0 +1,36 @@
+Qus : You are given a string s and an array of strings words. You should add a closed pair of bold tag <b> and </b> to wrap the substrings in s that exist in words. If two such substrings overlap, you should wrap them together with only one pair of closed bold-tag. If two substrings wrapped by bold tags are consecutive, you should combine them.
+Return s after adding the bold tags.
+
+Ex: Input: s = "abcxyz123", words = ["abc","123"]
+Output: "<b>abc</b>xyz<b>123</b>"
+
+Ans :
+
+class Solution {
+    public String addBoldTag(String s, String[] dict) {
+        StringBuilder ans = new StringBuilder();
+        int i = 0;
+        while (i < s.length()) {
+            int end = findLongestOverlapped(s, i, dict);
+            if (i == end) {
+                ans.append(s.charAt(i++));
+            } else {
+                ans.append("<b>").append(s.substring(i, end)).append("</b>");
+                i = end;
+            }
+        }
+        return ans.toString();
+    }
+
+    private int findLongestOverlapped(String s, int start, String[] dict) {
+        int end = start;
+        for (int i = start; i <= end; i++) {
+            for (String word : dict) {
+                if (s.startsWith(word, i)) {
+                    end = Math.max(end, i + word.length());
+                }
+            }
+        }
+        return end;
+    }
+}
