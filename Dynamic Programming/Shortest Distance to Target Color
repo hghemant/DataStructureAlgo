@@ -1,0 +1,59 @@
+Question: 
+You are given an array colors, in which there are three colors: 1, 2 and 3.
+You are also given some queries. Each query consists of two integers i and c, return the shortest distance between the given index i and the target color c. If there is no solution return -1.
+
+Example : 
+Input: colors = [1,1,2,1,3,2,2,3,3], queries = [[1,3],[2,2],[6,1]]
+Output: [3,0,3]
+Explanation: 
+The nearest 3 from index 1 is at index 4 (3 steps away).
+The nearest 2 from index 2 is at index 2 itself (0 steps away).
+The nearest 1 from index 6 is at index 3 (3 steps away).
+
+Ans :
+
+class Solution {
+    
+   public List<Integer> shortestDistanceColor(int[] colors, int[][] queries) {
+        //Array of 4xN elements
+        //memo[color][index]
+        int[][] memo = new int[4][colors.length];
+        for(int i=1; i<4; i++){
+            Arrays.fill(memo[i], Integer.MAX_VALUE);
+        }
+        List<Integer> res = new ArrayList<>();
+        for(int[] q:queries){
+            //lookup in cache
+            if(memo[q[1]][q[0]]<Integer.MAX_VALUE)
+                res.add(memo[q[1]][q[0]]);
+            //if not found
+            else{
+                boolean found=false;
+                //scan right
+                for(int i=q[0]; i<colors.length; i++){
+                    if(colors[i]==q[1]){
+                        //Update the minimum element in cache
+                        memo[q[1]][q[0]]=Math.min(memo[q[1]][q[0]], i-q[0]);
+                        found=true;
+                        break;
+                    }
+                }
+                //scan left
+                for(int i=q[0]; i>=0; i--){
+                    if(colors[i]==q[1]){
+                        //Update the minimum element in cache
+                        memo[q[1]][q[0]]=Math.min(memo[q[1]][q[0]], q[0]-i);
+                        found=true;
+                        break;
+                    }
+                }
+                if(!found)
+                    res.add(-1);
+                else
+                    res.add(memo[q[1]][q[0]]);
+            }
+        }
+        return res;
+    }
+    
+}
