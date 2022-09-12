@@ -1,0 +1,32 @@
+Q
+Given an array of unique integers preorder, return true if it is the correct preorder traversal sequence of a binary search tree.
+
+Example 1:
+Input: preorder = [5,2,1,3,6]
+Output: true
+
+Ans 
+class Solution {
+   
+     int idx = 0;
+    public boolean verifyPreorder(int[] p) {
+        return verify(p,Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+    
+    
+    boolean verify(int[]p,int min, int max) {
+        if(idx >= p.length)
+            return true;
+        
+        int val = p[idx];
+        if(min < val && val < max) {
+            idx++;
+            return verify(p, min, val) || verify(p,val, max);
+        }
+        
+        return false;
+        
+        
+        
+    }
+}
