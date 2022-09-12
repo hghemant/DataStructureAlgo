@@ -1,0 +1,57 @@
+Question : Given a string s and an integer k, return true if s is a k-palindrome.
+A string is k-palindrome if it can be transformed into a palindrome by removing at most k characters from it.
+
+
+Example : 
+Input: s = "abcdeca", k = 2
+Output: true
+Explanation: Remove 'b' and 'e' characters.
+
+Answer 
+
+class Solution {
+    int[][] dpTable;
+    public static boolean isValidPalindrome(String s, int k) {
+         String s1=s;
+         String s2=reverse(s);
+         int x=solve(s1, s2);
+        int longestLength = solve(s1, s2);
+        return longestLength + k >= s.length();
+    }
+
+    static String reverse(String input) {
+        char[] temparray = input.toCharArray();
+        int left, right = 0;
+        right = temparray.length - 1;
+
+        for (left = 0; left < right; left++, right--) {
+            // Swap values of left and right
+            char temp = temparray[left];
+            temparray[left] = temparray[right];
+            temparray[right] = temp;
+        }
+        return String.valueOf(temparray);
+    }
+
+    public static int  solve(String s1, String s2) {
+        int[][] dpTable = new int[s1.length() + 1][s2.length() + 1];
+
+        for (int i =0; i<s1.length();i++){
+            for (int j =0; j<s2.length(); j++){
+                if(i==0||j==0){
+                    dpTable[i][j]=0;
+                }
+            }
+        }
+        for (int i = 1; i <= s1.length(); i++) {
+            for (int j = 1; j <= s2.length(); j++) {
+                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+                    dpTable[i][j] = 1 + dpTable[i - 1][j - 1];
+                } else {
+                    dpTable[i][j] = Math.max(dpTable[i - 1][j], dpTable[i][j - 1]);
+                }
+            }
+        }
+        return dpTable[s1.length()][s2.length()];
+    }
+}
