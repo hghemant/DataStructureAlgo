@@ -1,0 +1,46 @@
+Question 
+You are given an even number of people numPeople that stand around a circle and each person shakes hands with someone else so that there are numPeople / 2 handshakes total.
+Return the number of ways these handshakes could occur such that none of the handshakes cross.
+Since the answer could be very large, return it modulo 109 + 7.
+
+
+Example : 
+Input: numPeople = 4
+Output: 2
+Explanation: There are two ways to do it, the first way is [(1,2),(3,4)] and the second one is [(2,3),(4,1)].
+
+
+Ans 
+
+class Solution {
+      HashMap<Integer, Integer> map = new HashMap<>();
+    int mod = (int) Math.pow(10, 9) + 7;
+    public int numberOfWays(int numPeople) {      
+
+
+       if (numPeople % 2 != 0) {
+            return 0;
+        }
+        if (numPeople == 2 || numPeople == 0) {
+            return 1;
+        }
+        if (numPeople <= 0) {
+            return 0;
+        }
+        if (map.containsKey(numPeople)) {
+            return map.get(numPeople);
+        }
+        long ways = 0;
+        for (int second = 1; second < numPeople; second++) {
+            if (second == numPeople - 1) {
+                ways += numberOfWays(numPeople - 2);
+                ways %= mod;
+            } else {
+                ways += ((long) numberOfWays(second - 1) * numberOfWays(numPeople - second - 1));
+                ways %= mod;
+            }
+        }
+        map.put(numPeople, (int) ways);
+        return (int) ways;
+    }
+}
