@@ -1,0 +1,52 @@
+Question : You are starving and you want to eat food as quickly as possible. You want to find the shortest path to arrive at any food cell.
+
+You are given an m x n character matrix, grid, of these different types of cells:
+
+'*' is your location. There is exactly one '*' cell.
+'#' is a food cell. There may be multiple food cells.
+'O' is free space, and you can travel through these cells.
+'X' is an obstacle, and you cannot travel through these cells.
+You can travel to any adjacent cell north, east, south, or west of your current location if there is not an obstacle.
+
+Return the length of the shortest path for you to reach any food cell. If there is no path for you to reach food, return -1.
+
+
+EEample : Input: grid = [["X","X","X","X","X","X"],["X","*","O","O","O","X"],["X","O","O","#","O","X"],["X","X","X","X","X","X"]]
+Output: 3
+Explanation: It takes 3 steps to reach the food.
+
+Answer : 
+class Solution {
+ int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
+    public int getFood(char[][] grid) {
+        int n = grid.length, m = grid[0].length, steps = 0;
+        boolean[][] seen = new boolean[n][m];
+        Queue<int[]> q = new LinkedList();
+        
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < m; j++)
+                if(grid[i][j] == '*')
+                    q.add(new int[]{i , j});
+        
+        while(!q.isEmpty()){
+            int size = q.size();
+            while(size-- > 0){
+                int[] index = q.poll();
+                int row = index[0], col = index[1];
+                
+                if(grid[row][col] == '#') return steps;
+                
+                for(int[] direction : directions){
+                    int r = row + direction[0], c = col + direction[1];
+                    if(r >= 0 && c >= 0 && r < n && c < m && grid[r][c] != 'X' && !seen[r][c]){
+                         seen[r][c] = true;
+                         q.add(new int[]{r , c});
+                    }
+                    
+                } 
+            }
+            steps++;
+        }
+        return -1;
+    }
+}
