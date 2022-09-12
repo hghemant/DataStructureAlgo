@@ -1,0 +1,43 @@
+Q : 
+Given an array of strings words (without duplicates), return all the concatenated words in the given list of words.
+A concatenated word is defined as a string that is comprised entirely of at least two shorter words in the given array.
+
+ex: 
+Input: words = ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
+Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
+Explanation: "catsdogcats" can be concatenated by "cats", "dog" and "cats"; 
+"dogcatsdog" can be concatenated by "dog", "cats" and "dog"; 
+"ratcatdogcat" can be concatenated by "rat", "cat", "dog" and "cat".
+
+Ans: 
+class Solution {
+    public List<String> findAllConcatenatedWordsInADict(String[] words) {
+        Set<String> set = new HashSet<>();
+        
+        for (String word : words) {
+            set.add(word);
+        }
+        
+        List<String> ans = new ArrayList<>();
+        for (String word : words) {
+            set.remove(word);
+            if (recur(word, set, 0)) ans.add(word);
+            set.add(word);
+        }
+        return ans;
+    }
+    
+    private boolean recur(String s, Set<String> words, int index) {
+        if (index == s.length()) {
+            return true;
+        }
+        
+        for (int i = index+1; i <= s.length(); i++ ) {
+            String sub = s.substring(index, i);
+            if (words.contains(sub) && recur(s, words, i)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
