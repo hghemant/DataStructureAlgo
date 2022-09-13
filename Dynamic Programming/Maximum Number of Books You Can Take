@@ -17,6 +17,13 @@ It can be proven that 19 is the maximum number of books you can take.
 
 Ans 
 
+We need a stack to keep the indexes of the shelves. We process all the shelves one by one.
+Each time we try to make 1,2,3,…,books[i] sequence is the index difference allow us 
+(since this sequence should be strictly increasing). Each time after considering books[i],
+we put its index in the stack and we make sure we keep track of the max take as we go.
+Method totalTake takes books[i] and index difference between
+I and an index before I or between I and 0. This method returns the sum of the sequence that we can make starting from books[I] backward (1,2,3,…,books[i]).
+
    public long maximumBooks(int[] books) {
         Deque<Integer> indexStack = new ArrayDeque<>();
         long currTake = 0, maxTake = 0;
