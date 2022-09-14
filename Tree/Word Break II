@@ -8,6 +8,14 @@ Input: s = "catsanddog", wordDict = ["cat","cats","and","sand","dog"]
 Output: ["cats and dog","cat sand dog"]
 
 
+Let NN be the length of the input string and WW be the number of words in the dictionary.
+
+Let NN be the length of the input string and WW be the number of words in the dictionary.
+
+Time Complexity: \mathcal{O}(N^2 + 2 ^ N + W)O(N2 +2powN +W)
+
+
+
 class Solution {
       Map<String, List<String>> mp = new HashMap();
 
